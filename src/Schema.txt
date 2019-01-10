@@ -1,0 +1,76 @@
+Users —Post —> Tweets
+Users —Follow —> Users
+Create timeline 
+
+
+
+Object 1: Users
+Object 2: Tweets
+
+Assumptions: 
+1.十亿用户，2亿活跃用户
+2.一亿推特
+3.每个User follow 200 个 Users
+4.每个User 每天 favorite 5 个 tweet
+5.每个User 每天看两次 timeline。
+6.每个User 每天看5次别人的page
+7.假设5和假设6中，每次能看到20条tweet
+8.每5个tweet中有一个有照片
+9.每10个里面有一个 video
+10.users 阅读时，每3个video 看一个
+
+关于数据量的假设：
+1.一个tweet 140 characters
+2.一个字符2个byte
+3.一个tweet 还要 30byte来存metadata（ID，Timestamp，UserId）
+4.一个photo 200kb
+5.一个video 2mb
+
+如果每天有1亿推特的话，那么每天需要存tweet的storage就是：1亿 x (140 x 2 + 30) bytes = 30GB
+根据假设 8 和关于数据的假设 5，6:
+每天media的量是：24TB
+
+因为每天media量远大于tweet量，可以计算出每秒数据生成量约为：300MB
+
+Total Tweet view. 根据 假设 5，6，7 和 1:
+每天tweet 阅读量是：280亿
+
+根据假设 8，9，10 以及所有关于数据量的假设：
+每秒的数据读取量为：
+文字：280亿 x （140 x 2）/ 86400 秒 ==> 93MB/s
+照片：280亿 / 5 x 200KB / 86400 秒 ==> 13GB/s
+视频：280亿 / 10 / 3 / 86400 秒    ==> 22GB/s
+
+
+tweet(api_dev_key, tweet_data, tweet_location, user_location, media_ids, maximum_results_to_return)
+
+
+DataBase Schema:
+
+Object 1: Tweet
+Primary key : Tweet ID
+UserId
+Content
+Tweet Latitude
+Tweet Longitude
+User Latitude
+User Longitude
+CreationDate
+NumFavorites
+
+Object 2: User
+Primary key: UserId
+Name
+Email
+DateOfBirth
+CreationDate
+LastLogin
+
+Object 3: Follow
+Primary key: UserID1
+Primary key: UserID2
+
+Object 4: Favorite
+Primary key: TweetID
+Primary key: UserID
+CreationDate
